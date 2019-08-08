@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <script type="text/javascript" src="City.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="resources/resources.js" charset="UTF-8"></script>
+    <script>
+
+
+        //I tried to show the best route directly
+        //Here is the json of the cities and where I make the connections
+        const json =
+            '{ "cities": [ { "name": "Madrid", "base": true, "reward": 0 }, { "name": "London", "reward": 47 }, { "name": "Paris", "reward": 52 }, { "name": "Rome", "reward": 35 }, { "name": "Berlin", "reward": 18 }, { "name": "Warsaw", "reward": 22 }, { "name": "Bucharest", "reward": 11 }, { "name": "Kyiv", "reward": 9 }, { "name": "Moscow", "reward": 50 } ], "connections": [ { "from": "Madrid", "to": "London", "cost": 12 }, { "from": "Madrid", "to": "Paris", "cost": 12 }, { "from": "Madrid", "to": "Rome", "cost": 15 }, { "from": "Paris", "to": "London", "cost": 6 }, { "from": "Paris", "to": "Berlin", "cost": 15 }, { "from": "Berlin", "to": "Rome", "cost": 7 }, { "from": "Berlin", "to": "Warsaw", "cost": 12 }, { "from": "Rome", "to": "Bucharest", "cost": 15 }, { "from": "Warsaw", "to": "Kyiv", "cost": 5 }, { "from": "Bucharest", "to": "Kyiv", "cost": 5 }, { "from": "London", "to": "Moscow", "cost": 39 }, { "from": "Kyiv", "to": "Moscow", "cost": 12 } ]}';
+        var data = JSON.parse(json);
+
+        let cities = [];
+        for (let i = 0; i < data["cities"].length; i++) {
+            cities.push(new City(data["cities"][i].name, parseInt(data["cities"][i].reward), data["cities"][i].base))
+        }
+        for (let i = 0; i < cities.length; i++) {
+            for (let j = 0; j < data["connections"].length; j++) {
+                if (cities[i].name === data["connections"][j].from) {
+                    cities[i].to.push([data["connections"][j].to, data["connections"][j].cost]);
+                }
+                if (cities[i].name === data["connections"][j].to) {
+                    cities[i].to.push([data["connections"][j].from, data["connections"][j].cost]);
+                }
+            }
+        }
+        let routes = [];
+
+        var base = cities.find(obj => {
+            return obj.base === true
+        });
+
+        // These arrays are the routes that the traveler follows
+
+        for (let i = 0; i < base.to.length; i++) {
+            var day2 = cities.find(obj => {
+                return obj.name === base.to[i][0];
+            });
+            for (let i = 0; i < day2.to.length; i++) {
+                var day3 = cities.find(obj => {
+                    return obj.name === day2.to[i][0];
+                });
+                for (let i = 0; i < day3.to.length; i++) {
+                    var day4 = cities.find(obj => {
+                        return obj.name === day3.to[i][0];
+                    });
+                    for (let i = 0; i < day4.to.length; i++) {
+                        var day5 = cities.find(obj => {
+                            return obj.name === day4.to[i][0];
+                        });
+                        for (let i = 0; i < day5.to.length; i++) {
+                            var day6 = cities.find(obj => {
+                                return obj.name === day5.to[i][0];
+                            });
+                            for (let i = 0; i < day6.to.length; i++) {
+                                var day7 = cities.find(obj => {
+                                    return obj.name === day6.to[i][0];
+                                });
+                                for (let i = 0; i < day7.to.length; i++) {
+                                    var return1 = cities.find(obj => {
+                                        return obj.name === day7.to[i][0];
+                                    });
+                                    if (return1.base) {
+                                        routes.push([base, day2, day3, day4, day5, day6, day7, return1])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(getBestRoute(routes));
+
+
+        //I tried to show the cities that the traveler was going through but I didn't get it
+        console.log(base['name'], day2['name'], day3['name'], day4['name'], day5['name'], day6['name'], day7['name'], return1['name'])
+
+    </script>
+</body>
+
+</html>
